@@ -1,7 +1,9 @@
 <template>
-  <div>这里是首页</div>
+  <HomePage />
 </template>
 
-<script setup></script>
+<script setup>
+import HomePage from '@/views/home/index.vue'
+</script>
 
 <style lang="scss" scoped></style>

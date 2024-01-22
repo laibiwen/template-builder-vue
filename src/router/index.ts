@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/pages/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +6,19 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      redirect: '/home',
+      children: [
+        {
+          path: 'home',
+          name: 'index',
+          component: () => import('@/pages/index.vue')
+        },
+        {
+          path: '/form-designer',
+          name: 'form-designer',
+          component: () => import('@/pages/form-designer.vue')
+        }
+      ]
     }
   ]
 })
