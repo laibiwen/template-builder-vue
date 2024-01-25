@@ -87,6 +87,7 @@ watch(
   () => props.initData,
   (val) => {
     if (props.type !== 'EDIT') return
+    formData.id = val.id
     formData.type = val.type
     formData.label = val.label
     formData.prop = val.prop

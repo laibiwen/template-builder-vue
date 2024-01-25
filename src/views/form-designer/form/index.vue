@@ -21,10 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import FormDialog from '@/components/dialog/form-config.vue'
 import { useFormStore } from '@/stores/form-stores'
 import type { FormConfig } from '@/stores/form-stores.ts'
+import axios from 'axios'
 
 const formStore = useFormStore()
 
@@ -51,7 +52,7 @@ const tableConfig = [
   }
 ]
 
-const tableData = ref(formStore.formConfigList)
+const tableData = computed(() => formStore.formConfigList)
 
 const visible = ref(false)
 
@@ -76,12 +77,38 @@ const onDel = (row: FormConfig) => {
   formStore.deleteItem(row)
 }
 
+const getFormConfigList = async () => {
+  const { data } = await axios.get('/api/template')
+  if (data.code === 0) {
+    console.log('data', data.data)
+    formStore.initFormList(data.data)
+  }
+}
+onMounted(() => {
+  getFormConfigList()
+})
+
+const onEditConfig = async (row: any) => {
+  const res = await axios.put(`/api/template/${row.id}`, {
+    ...row
+  })
+  console.log(res)
+}
+
+const onAddConfig = async (row: any) => {
+  const res = await axios.post('/api/template', {
+    ...row
+  })
+  console.log(res)
+}
+
 const onConfirm = (formConfig: FormConfig, type: Type) => {
   if (type === 'ADD') {
-    tableData.value.push(formConfig)
     formStore.push({ ...formConfig })
+    onAddConfig(formConfig)
   } else {
     formStore.editItem(formConfig)
+    onEditConfig(formConfig)
   }
 }
 </script>

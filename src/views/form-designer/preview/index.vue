@@ -32,20 +32,33 @@
       <el-form-item :label="item.label" :prop="item.prop" v-show="item.type === 'input'">
         <el-input v-model="formData[item.prop]" :placeholder="item.placeholder || '请输入'" />
       </el-form-item>
+      <el-form-item :label="item.label" :prop="item.prop" v-show="item.type === 'select'">
+        <el-select v-model="formData[item.prop]" style="min-width: 200px;" :placeholder="item.placeholder || '请输入'">
+          <el-option
+            v-for="option in formData[item.optionsKey]"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+          />
+        </el-select>
+      </el-form-item>
     </template>
   </el-form>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useFormStore } from '@/stores/form-stores.ts'
+import { useFormStore } from '@/stores/form-stores'
 
 const formStore = useFormStore()
 const list = computed(() => {
   return formStore.formConfigList
 })
+const formData = computed(() => {
+  const props = list.value.map((item) => item.prop)
+  return { ...props }
+}) as any
 
-const formData = ref({})
 const labelPosition = ref('left')
 const size = ref('default')
 const inline = ref(true)
